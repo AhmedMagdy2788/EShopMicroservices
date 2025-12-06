@@ -17,7 +17,6 @@
       <Folder Include="Features\Products\DeleteProduct\" />
       <Folder Include="Features\Products\GetProductByCategory\" />
       <Folder Include="Features\Products\GetProductById\" />
-      <Folder Include="Features\Products\GetProducts\" />
       <Folder Include="Features\Products\UpdateProduct\" />
     </ItemGroup>
 
@@ -27,6 +26,7 @@
 
     <ItemGroup>
       <PackageReference Include="Carter" Version="8.2.1" />
+      <PackageReference Include="Marten" Version="8.16.2" />
     </ItemGroup>
 
 </Project>

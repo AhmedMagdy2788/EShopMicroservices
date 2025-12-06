@@ -2,7 +2,7 @@ namespace Catalog.API.Features.Products.CreateProduct;
 
 public record CreateProductRequest(
     string Name,
-    List<string> categories,
+    List<string> Categories,
     string Description,
     decimal Price,
     string ImageFile);
