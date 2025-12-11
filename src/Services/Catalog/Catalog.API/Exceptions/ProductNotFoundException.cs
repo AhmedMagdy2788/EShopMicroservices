@@ -1,6 +1,3 @@
 namespace Catalog.API.Exceptions;
 
-public class ProductNotFoundException
-{
-    
-}
+public class ProductNotFoundException() : Exception("Product not found");
