@@ -6,21 +6,30 @@ public static class ResultExtensions
     {
         if (result.IsSuccess)
         {
-            return Results.Ok(result.Value);
+            return Results.Ok(result);
         }
 
-        // Create a consistent error response object
-        var errorResponse = new
-        {
-            error = result.Error!.Code,
-            message = result.Error.Message
-        };
+        // Create error response with details if available
+        // var errorResponse = result.Error!.Details != null && result.Error.Details.Any()
+        //     ? new
+        //     {
+        //         isSuccess = result.IsSuccess,
+        //         error = result.Error.Code,
+        //         message = result.Error.Message,
+        //         details = result.Error.Details
+        //     }
+        //     : new
+        //     {
+        //         isSuccess = result.IsSuccess,
+        //         error = result.Error.Code,
+        //         message = result.Error.Message
+        //     } as object;
 
         return result.Error!.Code switch
         {
-            ErrorCodes.NotFound => Results.NotFound(errorResponse),
-            ErrorCodes.Conflict => Results.Conflict(errorResponse),
-            ErrorCodes.BadRequest or ErrorCodes.ValidationError => Results.BadRequest(errorResponse),
+            ErrorCodes.NotFound => Results.NotFound(result),
+            ErrorCodes.Conflict => Results.Conflict(result),
+            ErrorCodes.BadRequest or ErrorCodes.ValidationError => Results.BadRequest(result),
 
             ErrorCodes.DatabaseError or ErrorCodes.InternalServerError => Results.Problem(
                 title: result.Error.Code,

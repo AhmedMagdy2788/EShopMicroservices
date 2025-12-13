@@ -5,28 +5,50 @@ public record CreateProductCommand(
     List<string> Categories,
     string Description,
     decimal Price,
-    string ImageFile) : ICommand<CreateProductResult>;
+    string ImageFile) : ICommand<Result<CreateProductResult>>;
 
 public record CreateProductResult(Guid Id);
 
-internal class CreateProductCommandHandler(IDocumentSession session)
-    : ICommandHandler<CreateProductCommand, CreateProductResult>
+public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-    public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
+    public CreateProductCommandValidator()
     {
-        //create Product entity from command object
-        var product = new Product
+        RuleFor(c => c.Name).NotEmpty().WithMessage("Product name is required");
+        RuleFor(c => c.Categories).NotEmpty().WithMessage("Categories is required");
+        RuleFor(c => c.ImageFile).NotEmpty().WithMessage("ImageFile is required");
+        RuleFor(c => c.Price).GreaterThan(0).WithMessage("Price must be greater than 0");
+    }
+}
+
+internal class CreateProductCommandHandler(IDocumentSession session, ILogger<CreateProductCommandHandler> logger)
+    : ICommandHandler<CreateProductCommand, Result<CreateProductResult>>
+{
+    public async Task<Result<CreateProductResult>> Handle(CreateProductCommand command,
+        CancellationToken cancellationToken)
+    {
+        try
         {
-            Name = command.Name,
-            Categories = command.Categories,
-            Description = command.Description,
-            Price = command.Price,
-            ImageFile = command.ImageFile
-        };
-        //save to database
-        session.Store(product);
-        await session.SaveChangesAsync(cancellationToken);
-        //return CreateProductResult result
-        return new CreateProductResult(product.Id);
+            logger.LogInformation("CreateProductCommandHandler.Handle called with {@Command}", command);
+            //create Product entity from command object
+            var product = new Product
+            {
+                Name = command.Name,
+                Categories = command.Categories,
+                Description = command.Description,
+                Price = command.Price,
+                ImageFile = command.ImageFile
+            };
+            //save to database
+            session.Store(product);
+            await session.SaveChangesAsync(cancellationToken);
+            logger.LogInformation("Created Product {@Product}", product);
+            //return CreateProductResult result
+            return Result<CreateProductResult>.Success(new CreateProductResult(product.Id), "Product created successfully");
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error creating product {@Command}", command);
+            throw;
+        }
     }
 }

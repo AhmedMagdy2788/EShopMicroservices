@@ -1,18 +1,42 @@
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Mvc;
+
 namespace BuildingBlocks.HelperClasses;
 
-public class Error(string code, string message)
+public class Error(
+    string code,
+    string message,
+    IDictionary<string, object?>? details = null)
 {
     public string Code { get; init; } = code;
     public string Message { get; init; } = message;
+    public IDictionary<string, object?>? Details { get; init; } = details;
 
     // Predefined errors
     public static Error None => new(string.Empty, string.Empty);
-    public static Error NotFound(string message) => new(ErrorCodes.NotFound, message);
-    public static Error BadRequest(string message) => new(ErrorCodes.BadRequest, message);
-    public static Error InternalServerError(string message) => new(ErrorCodes.InternalServerError, message);
-    public static Error ValidationError(string message) => new(ErrorCodes.ValidationError, message);
-    public static Error DatabaseError(string message) => new(ErrorCodes.DatabaseError, message);
-    public static Error Conflict(string message) => new(ErrorCodes.Conflict, message);
+
+    public static Error NotFound(string message, 
+        IDictionary<string, object?>? details = null) => new(ErrorCodes.NotFound, message, details);
+
+    public static Error BadRequest(string message, 
+        IDictionary<string, object?>? details = null) => new(ErrorCodes.BadRequest, message,  details);
+
+
+    public static Error Conflict(string message, 
+        IDictionary<string, object?>? details = null) => new(ErrorCodes.Conflict, message,  details);
+
+    // Enhanced validation error with details
+    public static Error ValidationError(string message,
+        IDictionary<string, object?>? details = null) =>
+        new(ErrorCodes.ValidationError, message, details);
+
+    public static Error DatabaseError(string message, 
+        IDictionary<string, object?>? details = null) => new(ErrorCodes.DatabaseError, message,  details);
+
+    public static Error InternalServerError(string message,
+        IDictionary<string, object?>? details) =>
+        new(ErrorCodes.InternalServerError, message, details);
+
 }
 
 public static class ErrorCodes

@@ -13,7 +13,7 @@ public class GetProductByIdCommandHandler(IDocumentSession session, ILogger<GetP
             
             var product = await session.LoadAsync<Product>(query.Id, cancellationToken);
 
-            if (product != null) return Result<Product>.Success(product);
+            if (product != null) return Result<Product>.Success(product, $"Product with Id: {query.Id} found");
             logger.LogWarning("Product with Id: {ProductId} not found", query.Id);
             return Result<Product>.Failure(
                 Error.NotFound($"Product with Id {query.Id} not found")

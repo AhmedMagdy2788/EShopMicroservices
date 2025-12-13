@@ -1,6 +1,4 @@
-using Catalog.API.Features.Products.GetProductById;
-
-namespace Catalog.API.Features.Products.GetProductByCategory;
+namespace Catalog.API.Features.Products.GetProductsByCategory;
 
 public record GetProductsByCategoryResponse(IReadOnlyList<Product> Products);
 

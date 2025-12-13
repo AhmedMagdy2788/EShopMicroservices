@@ -1,8 +1,10 @@
-namespace Catalog.API.Features.Products.GetProductByCategory;
+namespace Catalog.API.Features.Products.GetProductsByCategory;
 
 public record GetProductsByCategoryQuery(string Category) : IQuery<Result<IReadOnlyList<Product>>>;
 
-public class GetProductsByCategoryCommandHandler(IDocumentSession session, ILogger<GetProductsByCategoryCommandHandler> logger)
+public class GetProductsByCategoryCommandHandler(
+    IDocumentSession session,
+    ILogger<GetProductsByCategoryCommandHandler> logger)
     : IQueryHandler<GetProductsByCategoryQuery, Result<IReadOnlyList<Product>>>
 {
     public async Task<Result<IReadOnlyList<Product>>> Handle(GetProductsByCategoryQuery query,
@@ -13,7 +15,8 @@ public class GetProductsByCategoryCommandHandler(IDocumentSession session, ILogg
             logger.LogInformation("Fetching products with Query{@Query}", query);
             var products = await session.Query<Product>().Where(p => p.Categories.Contains(query.Category))
                 .ToListAsync(cancellationToken);
-            return Result<IReadOnlyList<Product>>.Success(products);
+            return Result<IReadOnlyList<Product>>.Success(products,
+                $"Category '{query.Category}' hold {products.Count} products");
         }
         catch (Exception e)
         {

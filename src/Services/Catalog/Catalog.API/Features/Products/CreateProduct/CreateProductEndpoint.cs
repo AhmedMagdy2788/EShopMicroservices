@@ -7,8 +7,6 @@ public record CreateProductRequest(
     decimal Price,
     string ImageFile);
 
-public record CreateProductResponse(Guid Id);
-
 public class CreateProductEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
@@ -17,11 +15,11 @@ public class CreateProductEndpoint : ICarterModule
             {
                 var command = request.Adapt<CreateProductCommand>();
                 var result = await sender.Send(command);
-                var response = result.Adapt<CreateProductResponse>();
-                return Results.Created($"/products/{response.Id}", response);
+                if (!result.IsSuccess) return result.ToHttpResponse();
+                return Results.Created($"/products/{result.Value.Id}", result);
             })
             .WithName("CreateProduct")
-            .Produces<CreateProductResponse>(StatusCodes.Status201Created)
+            .Produces<string>(StatusCodes.Status201Created)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithSummary("Create a Product")
             .WithDescription("Create a product");
