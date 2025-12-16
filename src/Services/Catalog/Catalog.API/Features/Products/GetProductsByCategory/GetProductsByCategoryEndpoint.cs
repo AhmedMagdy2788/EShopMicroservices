@@ -1,20 +1,24 @@
+using Catalog.API.Features.Products.GetProducts;
+
 namespace Catalog.API.Features.Products.GetProductsByCategory;
 
-public record GetProductsByCategoryResponse(IReadOnlyList<Product> Products);
+public record GetProductsByCategoryRequest(string Category, int? PageNumber = 1, int? PageSize = 10);
 
-public class GetProductsByCategoryEndpoint: ICarterModule
+public record GetProductsByCategoryResponse(IPagedList<Product> Products);
+
+public class GetProductsByCategoryEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/products/category/{categoryId}", async (string categoryId, ISender sender) =>
+        app.MapGet("/products/category", async ([AsParameters]  GetProductsByCategoryRequest request, ISender sender) =>
             {
-                var query = new GetProductsByCategoryQuery(categoryId);
+                var query = request.Adapt<GetProductsByCategoryQuery>();
                 var result = await sender.Send(query);
                 return result.ToHttpResponse();
             })
             .WithName("GetProductsByCategory")
             .Produces<GetProductsByCategoryResponse>(statusCode: StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status400BadRequest) 
+            .Produces(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithSummary("Get Products by Category")
             .WithDescription("Get products by Category");

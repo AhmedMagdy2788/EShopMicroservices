@@ -1,22 +1,21 @@
 namespace Catalog.API.Features.Products.GetProducts;
 
-public record GetProductsResponse(IReadOnlyList<Product> Products);
+public record GetProductsRequest(int? PageNumber = 1, int? PageSize = 10);
 
 public class GetProductsEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/products", async (ISender sender) =>
-        {
-            var query = new GetProductsQuery();
-            var result = await sender.Send(query);
-            var response = result.Adapt<GetProductsResponse>();
-            return Results.Ok(response);
-        })
-        .WithName("GetProducts")
-        .Produces<GetProductsResponse>(StatusCodes.Status200OK)
-        .ProducesProblem(StatusCodes.Status500InternalServerError)
-        .WithSummary("Get Products")
-        .WithDescription("Get products");
+        app.MapGet("/products", async ([AsParameters] GetProductsRequest request, ISender sender) =>
+            {
+                var query = request.Adapt<GetProductsQuery>();
+                var result = await sender.Send(query);
+                return result.ToHttpResponse();
+            })
+            .WithName("GetProducts")
+            .Produces<Result<IPagedList<Product>>>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithSummary("Get Products")
+            .WithDescription("Get products");
     }
 }

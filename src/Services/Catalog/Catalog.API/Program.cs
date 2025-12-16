@@ -1,4 +1,5 @@
-
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 //Add Services to the container
@@ -7,6 +8,7 @@ builder.Services.AddMediatR(config =>
 {
     config.RegisterServicesFromAssembly(typeof(Program).Assembly);
     config.AddOpenBehavior(typeof(ValidationBehavior<,>));
+    config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddMarten(options =>
@@ -18,6 +20,8 @@ builder.Services.AddMarten(options =>
         ? AutoCreate.CreateOrUpdate
         : AutoCreate.None;
 }).UseLightweightSessions();
+if (builder.Environment.IsDevelopment())
+    builder.Services.InitializeMartenWith<CatalogInitialData>();
 
 // Add Serilog
 builder.Host.UseSerilog((context, configuration) =>
@@ -27,8 +31,13 @@ builder.Host.UseSerilog((context, configuration) =>
 
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ??
+               throw new InvalidOperationException());
+
 var app = builder.Build();
-// Configure the HTTP request pipeline
+// Configure the HTTP r
+// equest pipeline
 app.MapCarter();
 app.UseExceptionHandler(options => { });
 // app.UseExceptionHandler(exceptionHandlerApp =>
@@ -48,5 +57,10 @@ app.UseExceptionHandler(options => { });
 //         await context.Response.WriteAsJsonAsync(serverErrorResult);
 //     });
 // });
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();

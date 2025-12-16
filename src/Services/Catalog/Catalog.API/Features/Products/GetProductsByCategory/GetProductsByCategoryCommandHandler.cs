@@ -1,28 +1,28 @@
 namespace Catalog.API.Features.Products.GetProductsByCategory;
 
-public record GetProductsByCategoryQuery(string Category) : IQuery<Result<IReadOnlyList<Product>>>;
+public record GetProductsByCategoryQuery(string Category, int? PageNumber, int? PageSize)
+    : IQuery<Result<IPagedList<Product>>>;
 
 public class GetProductsByCategoryCommandHandler(
     IDocumentSession session,
     ILogger<GetProductsByCategoryCommandHandler> logger)
-    : IQueryHandler<GetProductsByCategoryQuery, Result<IReadOnlyList<Product>>>
+    : IQueryHandler<GetProductsByCategoryQuery, Result<IPagedList<Product>>>
 {
-    public async Task<Result<IReadOnlyList<Product>>> Handle(GetProductsByCategoryQuery query,
+    public async Task<Result<IPagedList<Product>>> Handle(GetProductsByCategoryQuery query,
         CancellationToken cancellationToken)
     {
         try
         {
             logger.LogInformation("Fetching products with Query{@Query}", query);
             var products = await session.Query<Product>().Where(p => p.Categories.Contains(query.Category))
-                .ToListAsync(cancellationToken);
-            return Result<IReadOnlyList<Product>>.Success(products,
+                .ToPagedListAsync(query.PageNumber ?? 1, query.PageSize ?? 10, cancellationToken);
+            return Result<IPagedList<Product>>.Success(products,
                 $"Category '{query.Category}' hold {products.Count} products");
         }
         catch (Exception e)
         {
             logger.LogError(e, "Error occurred while fetching products with query: {@Query}", query);
-            return Result<IReadOnlyList<Product>>.Failure(
-                Error.DatabaseError("An error occurred while fetching the products from the database"));
+            throw;
         }
     }
 }

@@ -2,8 +2,6 @@ namespace Catalog.API.Features.Products.GetProductById;
 
 public record GetProductByIdRequest(Guid ProductId);
 
-public record GetProductByIdResponse(Product product);
-
 public class GetProductByIdEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
@@ -17,10 +15,10 @@ public class GetProductByIdEndpoint : ICarterModule
                 // If failure, map error code to appropriate HTTP response
                 return !result.IsSuccess
                     ? result.ToHttpResponse()
-                    : Results.Ok(new GetProductByIdResponse(result.Value!));
+                    : Results.Ok(result);
             })
             .WithName("GetProductById")
-            .Produces<GetProductByIdResponse>(StatusCodes.Status200OK)
+            .Produces<Result<Product>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound) 
             .Produces(StatusCodes.Status400BadRequest) 
             .ProducesProblem(StatusCodes.Status500InternalServerError)
