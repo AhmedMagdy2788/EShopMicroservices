@@ -2,7 +2,7 @@ namespace Catalog.API.Features.Products.GetProducts;
 
 public record GetProductsQuery(int? PageNumber = 1, int? PageSize = 10) : IQuery<Result<IPagedList<Product>>>;
 
-internal class GetProductsCommandHandler(IDocumentSession session, ILogger<GetProductsCommandHandler> logger)
+internal class GetProductsQueryHandler(IDocumentSession session, ILogger<GetProductsQueryHandler> logger)
     : IQueryHandler<GetProductsQuery, Result<IPagedList<Product>>>
 {
     public async Task<Result<IPagedList<Product>>> Handle(GetProductsQuery query, CancellationToken cancellationToken)

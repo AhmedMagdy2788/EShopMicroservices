@@ -3,9 +3,9 @@ namespace Catalog.API.Features.Products.GetProductsByCategory;
 public record GetProductsByCategoryQuery(string Category, int? PageNumber, int? PageSize)
     : IQuery<Result<IPagedList<Product>>>;
 
-public class GetProductsByCategoryCommandHandler(
+public class GetProductsByCategoryQueryHandler(
     IDocumentSession session,
-    ILogger<GetProductsByCategoryCommandHandler> logger)
+    ILogger<GetProductsByCategoryQueryHandler> logger)
     : IQueryHandler<GetProductsByCategoryQuery, Result<IPagedList<Product>>>
 {
     public async Task<Result<IPagedList<Product>>> Handle(GetProductsByCategoryQuery query,

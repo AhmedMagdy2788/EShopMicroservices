@@ -2,7 +2,7 @@ namespace Catalog.API.Features.Products.GetProductById;
 
 public record GetProductByIdQuery(Guid Id) : IQuery<Result<Product>>;
 
-public class GetProductByIdCommandHandler(IDocumentSession session, ILogger<GetProductByIdCommandHandler> logger)
+public class GetProductByIdQueryHandler(IDocumentSession session, ILogger<GetProductByIdQueryHandler> logger)
     : IQueryHandler<GetProductByIdQuery, Result<Product>>
 {
     public async Task<Result<Product>> Handle(GetProductByIdQuery query, CancellationToken cancellationToken)
@@ -10,7 +10,7 @@ public class GetProductByIdCommandHandler(IDocumentSession session, ILogger<GetP
         try
         {
             logger.LogInformation("GetProductByIdQueryHandler. handle called with {@Query}", query);
-            
+
             var product = await session.LoadAsync<Product>(query.Id, cancellationToken);
 
             if (product != null) return Result<Product>.Success(product, $"Product with Id: {query.Id} found");
@@ -18,7 +18,6 @@ public class GetProductByIdCommandHandler(IDocumentSession session, ILogger<GetP
             return Result<Product>.Failure(
                 Error.NotFound($"Product with Id {query.Id} not found")
             );
-
         }
         catch (Exception ex)
         {

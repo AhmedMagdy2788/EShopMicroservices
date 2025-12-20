@@ -6,8 +6,8 @@ public class Result<T>
     public string? Message { get; init; }
     public T? Value { get; init; }
     public Error? Error { get; init; }
-    
-    private Result(bool isSuccess, string? message,  T? value, Error? error)
+
+    protected Result(bool isSuccess, string? message,  T? value, Error? error)
     {
         IsSuccess = isSuccess;
         Message = message;

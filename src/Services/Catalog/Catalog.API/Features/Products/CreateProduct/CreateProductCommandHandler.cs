@@ -43,7 +43,8 @@ internal class CreateProductCommandHandler(IDocumentSession session, ILogger<Cre
             await session.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Created Product {@Product}", product);
             //return CreateProductResult result
-            return Result<CreateProductResult>.Success(new CreateProductResult(product.Id), "Product created successfully");
+            return Result<CreateProductResult>.Success(new CreateProductResult(product.Id),
+                "Product created successfully");
         }
         catch (Exception e)
         {

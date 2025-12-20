@@ -1,4 +1,7 @@
-namespace Catalog.API.Extensions;
+using BuildingBlocks.HelperClasses;
+using Microsoft.AspNetCore.Http;
+
+namespace BuildingBlocks.Extensions;
 
 public static class ResultExtensions
 {

@@ -12,35 +12,64 @@ public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IE
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
         CancellationToken cancellationToken)
     {
-        logger.LogError("Error Message: {exceptionMessage}, Time of occurrence {time}", exception.Message,
-            DateTime.UtcNow);
-        (string Detail, string Title, int StatusCode) details = exception switch
+        logger.LogError("Error Message: {exceptionMessage}, Time of occurrence {time}",
+            exception.Message, DateTime.UtcNow);
+
+        var (error, statusCode) = exception switch
         {
-            InternalServerException => (
-                exception.Message,
-                exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError
+            ValidationException validationException => (
+                Error.ValidationError(
+                    validationException.Message,
+                    new Dictionary<string, object?>
+                    {
+                        ["ValidationErrors"] = validationException.Errors,
+                        ["traceId"] = httpContext.TraceIdentifier,
+                        ["instance"] = httpContext.Request.Path.ToString()
+                    }
+                ),
+                StatusCodes.Status400BadRequest
             ),
-            _ => (exception.Message, exception.GetType().Name,
-                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError)
+            BadRequestException => (
+                Error.BadRequest(
+                    exception.Message,
+                    new Dictionary<string, object?>
+                    {
+                        ["traceId"] = httpContext.TraceIdentifier,
+                        ["instance"] = httpContext.Request.Path.ToString()
+                    }
+                ),
+                StatusCodes.Status400BadRequest
+            ),
+            NotFoundException => (
+                Error.NotFound(
+                    exception.Message,
+                    new Dictionary<string, object?>
+                    {
+                        ["traceId"] = httpContext.TraceIdentifier,
+                        ["instance"] = httpContext.Request.Path.ToString()
+                    }
+                ),
+                StatusCodes.Status404NotFound
+            ),
+            _ => (
+                Error.InternalServerError(
+                    exception.Message,
+                    new Dictionary<string, object?>
+                    {
+                        ["traceId"] = httpContext.TraceIdentifier,
+                        ["instance"] = httpContext.Request.Path.ToString()
+                    }
+                ),
+                StatusCodes.Status500InternalServerError
+            )
         };
-        var problemDetails = new ProblemDetails
-        {
-            Title = details.Title,
-            Detail = details.Detail,
-            Status = details.StatusCode,
-            Instance = httpContext.Request.Path
-        };
-        problemDetails.Extensions.Add("traceId", httpContext.TraceIdentifier);
-        if (exception is ValidationException validationException)
-        {
-            problemDetails.Extensions.Add("ValidationErrors", validationException.Errors);
-        }
 
-        var serverErrorResult =
-            Result<ProblemDetails>.Failure(Error.InternalServerError(exception.Message, problemDetails.Extensions));
+        httpContext.Response.StatusCode = statusCode;
 
-        await httpContext.Response.WriteAsJsonAsync(serverErrorResult, cancellationToken: cancellationToken);
+        var result = Result<object>.Failure(error);
+
+        await httpContext.Response.WriteAsJsonAsync(result, cancellationToken: cancellationToken);
+
         return true;
     }
 }

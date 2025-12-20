@@ -20,6 +20,8 @@ builder.Services.AddMarten(options =>
         ? AutoCreate.CreateOrUpdate
         : AutoCreate.None;
 }).UseLightweightSessions();
+
+// seeding data
 if (builder.Environment.IsDevelopment())
     builder.Services.InitializeMartenWith<CatalogInitialData>();
 

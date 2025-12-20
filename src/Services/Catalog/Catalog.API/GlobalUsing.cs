@@ -10,6 +10,6 @@ global using BuildingBlocks.CQRS;
 global using BuildingBlocks.HelperClasses;
 global using BuildingBlocks.Behaviors;
 global using BuildingBlocks.Exceptions;
+global using BuildingBlocks.Extensions;
 global using Catalog.API.Models;
-global using Catalog.API.Extensions;
 global using Catalog.API.Data;

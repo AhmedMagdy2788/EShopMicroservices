@@ -33,7 +33,7 @@ public class DeleteProductCommandHandler(IDocumentSession session, ILogger<Delet
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error occurred while updating products with command: {@command}", command);
+            logger.LogError(e, "Error occurred while deleting product with command: {@command}", command);
             throw;
         }
     }

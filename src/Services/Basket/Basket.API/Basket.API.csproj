@@ -9,17 +9,14 @@
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
+        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="9.0.0" />
         <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="9.0.0" />
         <PackageReference Include="Carter" Version="8.2.1" />
         <PackageReference Include="Marten" Version="8.17.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.15"/>
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.22" />
+        <PackageReference Include="Scrutor" Version="7.0.0" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="..\..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
     </ItemGroup>
 
     <ItemGroup>
@@ -28,12 +25,13 @@
 
     <ItemGroup>
       <Folder Include="Dtos\" />
-      <Folder Include="Exceptions\" />
-      <Folder Include="Features\Basket\CheckoutBasket\" />
-      <Folder Include="Features\Basket\DeleteBasket\" />
-      <Folder Include="Features\Basket\GetBasket\" />
-      <Folder Include="Features\Basket\StoreBasket\" />
       <Folder Include="GrpcServices\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>
