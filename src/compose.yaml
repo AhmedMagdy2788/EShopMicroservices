@@ -1,19 +1,22 @@
 ﻿services:
   catalogdb:
     image: postgres
-    
+  
   basketdb:
     image: postgres
   
   distributedcache:
     image: redis
   
+  orderdb:
+    image: mcr.microsoft.com/mssql/server
+  
   catalog.api:
     image: catalog.api
     build:
       context: .
       dockerfile: Services/Catalog/Catalog.API/Dockerfile
-      
+  
   basket.api:
     image: basket.api
     build:
@@ -29,6 +32,5 @@
 volumes:
   postgres_catalog:
   postgres_basket:
-
 
 

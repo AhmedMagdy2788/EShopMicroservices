@@ -49,7 +49,7 @@ builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(
 })
 .ConfigurePrimaryHttpMessageHandler(options =>
 {
-    // this is for development environments only, and should not be used in production due to security issues
+    //This is for development environments only, and should not be used in production due to security issues
     var handler = new HttpClientHandler
     {
         ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
@@ -64,9 +64,6 @@ builder.Host.UseSerilog((context, configuration) =>
             .ReadFrom.Configuration(context.Configuration) // Read from appsettings.json
 );
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddHealthChecks()
@@ -75,9 +72,11 @@ builder.Services.AddHealthChecks()
     .AddRedis(builder.Configuration.GetConnectionString("Redis") ??
               throw new InvalidOperationException());
 
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
