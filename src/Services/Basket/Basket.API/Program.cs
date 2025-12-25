@@ -1,10 +1,12 @@
+using Discount.Grpc;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Caching.Distributed;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//Application Services
 builder.Services.AddCarter();
 builder.Services.AddMediatR(config =>
 {
@@ -12,6 +14,8 @@ builder.Services.AddMediatR(config =>
     config.AddOpenBehavior(typeof(ValidationBehavior<,>));
     config.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
+
+//Data Services
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 builder.Services.AddMarten(options =>
 {
@@ -23,13 +27,6 @@ builder.Services.AddMarten(options =>
         ? AutoCreate.CreateOrUpdate
         : AutoCreate.None;
 }).UseLightweightSessions();
-
-// Add Serilog
-builder.Host.UseSerilog((context, configuration) =>
-        configuration
-            .ReadFrom.Configuration(context.Configuration) // Read from appsettings.json
-);
-
 builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 builder.Services.AddStackExchangeRedisCache(options =>
 {
@@ -44,17 +41,30 @@ builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
 //     return new CachedBasketRepository(basketRepository, provider.GetRequiredService<IDistributedCache>());
 // });
 
+//Grpc Services
+builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
+{
+    options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"] ?? throw new InvalidOperationException()); 
+});
+
+//Cross-Cutting Services
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+builder.Host.UseSerilog((context, configuration) =>
+        configuration
+            .ReadFrom.Configuration(context.Configuration) // Read from appsettings.json
+);
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ??
                throw new InvalidOperationException())
-    .AddRedis(builder.Configuration.GetConnectionString("Redis") ?? 
+    .AddRedis(builder.Configuration.GetConnectionString("Redis") ??
               throw new InvalidOperationException());
+
 
 var app = builder.Build();
 
