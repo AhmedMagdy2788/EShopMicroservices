@@ -44,7 +44,17 @@ builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
 //Grpc Services
 builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
 {
-    options.Address = new Uri(builder.Configuration["GrpcSettings:DiscountUrl"] ?? throw new InvalidOperationException()); 
+    options.Address =
+        new Uri(builder.Configuration["GrpcSettings:DiscountUrl"] ?? throw new InvalidOperationException());
+})
+.ConfigurePrimaryHttpMessageHandler(options =>
+{
+    // this is for development environments only, and should not be used in production due to security issues
+    var handler = new HttpClientHandler
+    {
+        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+    };
+    return handler;
 });
 
 //Cross-Cutting Services
