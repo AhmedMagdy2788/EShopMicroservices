@@ -32,9 +32,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
-
 builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
-
 // builder.Services.AddScoped<IBasketRepository>(provider =>
 // {
 //     var basketRepository = provider.GetRequiredService<IBasketRepository>();
@@ -42,20 +40,21 @@ builder.Services.Decorate<IBasketRepository, CachedBasketRepository>();
 // });
 
 //Grpc Services
+
 builder.Services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>(options =>
-{
-    options.Address =
-        new Uri(builder.Configuration["GrpcSettings:DiscountUrl"] ?? throw new InvalidOperationException());
-})
-.ConfigurePrimaryHttpMessageHandler(options =>
-{
-    //This is for development environments only, and should not be used in production due to security issues
-    var handler = new HttpClientHandler
     {
-        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-    };
-    return handler;
-});
+        options.Address =
+            new Uri(builder.Configuration["GrpcSettings:DiscountUrl"] ?? throw new InvalidOperationException());
+    })
+    .ConfigurePrimaryHttpMessageHandler(options =>
+    {
+        //This is for development environments only, and should not be used in production due to security issues
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
+        return handler;
+    });
 
 //Cross-Cutting Services
 builder.Services.AddExceptionHandler<CustomExceptionHandler>();
@@ -63,8 +62,6 @@ builder.Host.UseSerilog((context, configuration) =>
         configuration
             .ReadFrom.Configuration(context.Configuration) // Read from appsettings.json
 );
-
-
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("DefaultConnection") ??
