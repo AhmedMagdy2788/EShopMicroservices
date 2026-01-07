@@ -38,7 +38,7 @@ public class BasketRepository(IDocumentSession session, ILogger<BasketRepository
         {
             // TODO: delete basket from database and cache       
             // await repository.DeleteBasket(command.UserName, cancellationToken);
-            var cart = await session.LoadAsync<ShoppingCart>(userName,  cancellationToken);
+            var cart = await session.LoadAsync<ShoppingCart>(userName, cancellationToken);
             if (cart is null) throw new BasketNotFoundException(userName);
 
             session.Delete(cart);

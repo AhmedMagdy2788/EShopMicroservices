@@ -10,7 +10,7 @@ public class GetBasketEndpoint : ICarterModule
                 var result = await sender.Send(query);
                 return result.ToHttpResponse();
             }).WithName("GetShoppingCart")
-            .Produces<Result<ShoppingCart>>(StatusCodes.Status200OK)
+            .Produces<Result<ShoppingCart>>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError)

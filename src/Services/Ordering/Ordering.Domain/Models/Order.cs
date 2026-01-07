@@ -12,13 +12,20 @@ public class Order : Aggregate<OrderId>
     public Payment Payment { get; private set; } = default!;
     public OrderStatus Status { get; private set; } = OrderStatus.Pending;
 
-    public bool IsEditable() => Status == OrderStatus.Draft;
-    public bool CanBeCancelled() => Status is OrderStatus.Pending or OrderStatus.Draft;
-
     public decimal TotalPrice
     {
         get => OrderItems.Sum(x => x.Price * x.Quantity);
         private set { }
+    }
+
+    public bool IsEditable()
+    {
+        return Status == OrderStatus.Draft;
+    }
+
+    public bool CanBeCancelled()
+    {
+        return Status is OrderStatus.Pending or OrderStatus.Draft;
     }
     // In Order class
 
@@ -40,7 +47,7 @@ public class Order : Aggregate<OrderId>
             ShippingAddress = shippingAddress,
             BillingAddress = billingAddress,
             Payment = payment,
-            Status = OrderStatus.Pending,
+            Status = OrderStatus.Pending
         };
 
         order.AddDomainEvent(new OrderCreatedEvent(order));
@@ -84,10 +91,7 @@ public class Order : Aggregate<OrderId>
     public void Remove(ProductId productId)
     {
         var orderItem = _orderItems.FirstOrDefault(x => x.ProductId == productId);
-        if (orderItem is not null)
-        {
-            _orderItems.Remove(orderItem);
-        }
+        if (orderItem is not null) _orderItems.Remove(orderItem);
     }
 
     public void UpdateOrderItemQuantity(ProductId productId, int newQuantity)

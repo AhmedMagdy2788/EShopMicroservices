@@ -13,7 +13,7 @@ public class GetProductsEndpoint : ICarterModule
                 return result.ToHttpResponse();
             })
             .WithName("GetProducts")
-            .Produces<Result<IPagedList<Product>>>(StatusCodes.Status200OK)
+            .Produces<Result<IPagedList<Product>>>()
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithSummary("Get Products")
             .WithDescription("Get products");

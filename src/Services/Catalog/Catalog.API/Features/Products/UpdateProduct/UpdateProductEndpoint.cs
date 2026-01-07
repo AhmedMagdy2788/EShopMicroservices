@@ -16,7 +16,7 @@ public class UpdateProductEndpoint : ICarterModule
             })
             .WithName("UpdateProduct")
             .WithTags("Products")
-            .Produces<Unit>(StatusCodes.Status200OK)
+            .Produces<Unit>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status500InternalServerError)

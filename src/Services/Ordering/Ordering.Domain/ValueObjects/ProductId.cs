@@ -2,9 +2,12 @@ namespace Ordering.Domain.ValueObjects;
 
 public record ProductId
 {
-    public Guid Value { get; }
+    private ProductId(Guid value)
+    {
+        Value = value;
+    }
 
-    private ProductId(Guid value) => Value = value;
+    public Guid Value { get; }
 
     public static ProductId Of(Guid value)
     {

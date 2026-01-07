@@ -1,5 +1,3 @@
-using Spectre.Console;
-
 namespace Catalog.API.Features.Products.UpdateProduct;
 
 public record UpdateProductCommand(Guid id, Product Product) : ICommand<Result<Unit>>;
@@ -46,7 +44,7 @@ public class UpdateProductCommandHandler(IDocumentSession session, ILogger<Updat
             await session.SaveChangesAsync(cancellationToken);
 
             logger.LogInformation("Product updated: {ProductId}", command.Product.Id);
-            return Result<Unit>.Success(Unit.Value,  "Product updated successfully");
+            return Result<Unit>.Success(Unit.Value, "Product updated successfully");
         }
         catch (Exception e)
         {

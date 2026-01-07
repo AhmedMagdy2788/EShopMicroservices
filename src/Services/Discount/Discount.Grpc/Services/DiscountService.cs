@@ -40,19 +40,19 @@ public class DiscountService(DiscountContext dbContext, ILogger<DiscountService>
                 new Status(StatusCode.InvalidArgument, $"Coupon creation failed: {e.Message}")
             );
         }
-        
     }
 
     public override async Task<CouponModel> GetDiscount(GetDiscountRequest request, ServerCallContext context)
     {
-        var coupon = await dbContext.Coupons.FirstOrDefaultAsync(x=> x.ProductName == request.ProductName);
+        var coupon = await dbContext.Coupons.FirstOrDefaultAsync(x => x.ProductName == request.ProductName);
         if (coupon == null)
         {
             logger.LogInformation("Coupon not found");
             throw new RpcException(
-                new Status(StatusCode.NotFound, 
+                new Status(StatusCode.NotFound,
                     $"Discount for {request.ProductName} not found"));
         }
+
         logger.LogInformation("Discount is retrieved for ProductName : {productName}", request.ProductName);
         return coupon.Adapt<CouponModel>();
     }
@@ -80,7 +80,8 @@ public class DiscountService(DiscountContext dbContext, ILogger<DiscountService>
         return couponModel;
     }
 
-    public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request, ServerCallContext context)
+    public override async Task<DeleteDiscountResponse> DeleteDiscount(DeleteDiscountRequest request,
+        ServerCallContext context)
     {
         var coupon = await dbContext.Coupons.FirstOrDefaultAsync(x =>
             x.ProductName == request.ProductName

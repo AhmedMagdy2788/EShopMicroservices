@@ -15,10 +15,10 @@
         <PackageReference Include="Google.Protobuf" Version="3.33.2"/>
         <PackageReference Include="Grpc.AspNetCore" Version="2.76.0"/>
         <PackageReference Include="Marten" Version="8.17.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.22" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.22"/>
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.22"/>
-        <PackageReference Include="Scrutor" Version="7.0.0" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4" />
+        <PackageReference Include="Scrutor" Version="7.0.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.4"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -35,9 +35,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\..\..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
 </Project>

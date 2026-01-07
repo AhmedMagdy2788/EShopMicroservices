@@ -18,9 +18,9 @@ public class GetProductByIdEndpoint : ICarterModule
                     : Results.Ok(result);
             })
             .WithName("GetProductById")
-            .Produces<Result<Product>>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound) 
-            .Produces(StatusCodes.Status400BadRequest) 
+            .Produces<Result<Product>>()
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithSummary("Get Product by Id")
             .WithDescription("Get product by Id");

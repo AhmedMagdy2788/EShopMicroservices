@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Mvc;
-
 namespace BuildingBlocks.HelperClasses;
 
 public class Error(
@@ -15,28 +12,43 @@ public class Error(
     // Predefined errors
     public static Error None => new(string.Empty, string.Empty);
 
-    public static Error NotFound(string message, 
-        IDictionary<string, object?>? details = null) => new(ErrorCodes.NotFound, message, details);
+    public static Error NotFound(string message,
+        IDictionary<string, object?>? details = null)
+    {
+        return new Error(ErrorCodes.NotFound, message, details);
+    }
 
-    public static Error BadRequest(string message, 
-        IDictionary<string, object?>? details = null) => new(ErrorCodes.BadRequest, message,  details);
+    public static Error BadRequest(string message,
+        IDictionary<string, object?>? details = null)
+    {
+        return new Error(ErrorCodes.BadRequest, message, details);
+    }
 
 
-    public static Error Conflict(string message, 
-        IDictionary<string, object?>? details = null) => new(ErrorCodes.Conflict, message,  details);
+    public static Error Conflict(string message,
+        IDictionary<string, object?>? details = null)
+    {
+        return new Error(ErrorCodes.Conflict, message, details);
+    }
 
     // Enhanced validation error with details
     public static Error ValidationError(string message,
-        IDictionary<string, object?>? details = null) =>
-        new(ErrorCodes.ValidationError, message, details);
+        IDictionary<string, object?>? details = null)
+    {
+        return new Error(ErrorCodes.ValidationError, message, details);
+    }
 
-    public static Error DatabaseError(string message, 
-        IDictionary<string, object?>? details = null) => new(ErrorCodes.DatabaseError, message,  details);
+    public static Error DatabaseError(string message,
+        IDictionary<string, object?>? details = null)
+    {
+        return new Error(ErrorCodes.DatabaseError, message, details);
+    }
 
     public static Error InternalServerError(string message,
-        IDictionary<string, object?>? details) =>
-        new(ErrorCodes.InternalServerError, message, details);
-
+        IDictionary<string, object?>? details)
+    {
+        return new Error(ErrorCodes.InternalServerError, message, details);
+    }
 }
 
 public static class ErrorCodes

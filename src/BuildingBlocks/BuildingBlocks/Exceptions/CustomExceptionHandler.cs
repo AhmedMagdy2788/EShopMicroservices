@@ -2,7 +2,6 @@ using BuildingBlocks.HelperClasses;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Exceptions;
@@ -68,7 +67,7 @@ public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IE
 
         var result = Result<object>.Failure(error);
 
-        await httpContext.Response.WriteAsJsonAsync(result, cancellationToken: cancellationToken);
+        await httpContext.Response.WriteAsJsonAsync(result, cancellationToken);
 
         return true;
     }

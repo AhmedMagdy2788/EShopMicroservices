@@ -2,14 +2,6 @@ namespace Ordering.Domain.ValueObjects;
 
 public sealed record Address
 {
-    public string FirstName { get; } = null!;
-    public string LastName { get; } = null!;
-    public string? EmailAddress { get; } = null!;
-    public string AddressLine { get; } = null!;
-    public string Country { get; } = null!;
-    public string State { get; } = null!;
-    public string ZipCode { get; } = null!;
-    
     private Address(
         string firstName,
         string lastName,
@@ -29,6 +21,14 @@ public sealed record Address
         ZipCode = zipCode;
     }
 
+    public string FirstName { get; } = null!;
+    public string LastName { get; } = null!;
+    public string? EmailAddress { get; }
+    public string AddressLine { get; } = null!;
+    public string Country { get; } = null!;
+    public string State { get; } = null!;
+    public string ZipCode { get; } = null!;
+
     public static Address Of(
         string firstName,
         string lastName,
@@ -44,7 +44,7 @@ public sealed record Address
 
         return new Address(firstName, lastName, emailAddress, addressLine, country, state, zipCode);
     }
-    
+
     public override int GetHashCode()
     {
         return HashCode.Combine(FirstName, LastName, EmailAddress, AddressLine, Country, State, ZipCode);

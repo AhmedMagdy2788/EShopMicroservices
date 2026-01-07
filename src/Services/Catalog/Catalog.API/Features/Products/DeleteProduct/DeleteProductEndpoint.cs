@@ -11,7 +11,7 @@ public class DeleteProductEndpoint : ICarterModule
             })
             .WithName("DeleteProduct")
             .WithTags("Products")
-            .Produces<Unit>(StatusCodes.Status200OK)
+            .Produces<Unit>()
             .Produces(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithSummary("Delete Product")

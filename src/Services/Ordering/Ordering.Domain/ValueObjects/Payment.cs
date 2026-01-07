@@ -2,12 +2,6 @@ namespace Ordering.Domain.ValueObjects;
 
 public sealed record Payment
 {
-    public string? CardName { get; } = null!;
-    public string CardNumber { get; } = null!;
-    public string Expiration { get; } = null!;
-    public string Cvv { get; } = null!;
-    public int PaymentMethod { get; }
-
     private Payment(
         string cardName,
         string cardNumber,
@@ -22,6 +16,12 @@ public sealed record Payment
         Cvv = cvv;
         PaymentMethod = paymentMethod;
     }
+
+    public string? CardName { get; }
+    public string CardNumber { get; } = null!;
+    public string Expiration { get; } = null!;
+    public string Cvv { get; } = null!;
+    public int PaymentMethod { get; }
 
     public static Payment Of(
         string cardName,

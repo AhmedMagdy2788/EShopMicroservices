@@ -4,6 +4,7 @@ using FluentValidation;
 using MediatR;
 
 namespace BuildingBlocks.Behaviors;
+
 public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : ICommand<TResponse>
@@ -24,14 +25,14 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
             .ToList();
 
         if (failures.Count == 0) return await next(cancellationToken);
-        
+
         // Group errors by property name to handle multiple errors per field
         var errorDetails = failures
             .GroupBy(f => f.PropertyName)
             .ToDictionary(
                 g => g.Key, object (g) => g.Select(f => f.ErrorMessage).ToList()
             );
-        
+
         var validationError = Error.ValidationError(
             "One or more validation errors occurred",
             errorDetails
@@ -47,12 +48,12 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
         if (!resultType.IsGenericType || resultType.GetGenericTypeDefinition() != typeof(Result<>))
             throw new InvalidOperationException(
                 $"TResponse must be Result<T>, but was {resultType.Name}");
-        
+
         var valueType = resultType.GetGenericArguments()[0];
         var failureMethod = typeof(Result<>)
             .MakeGenericType(valueType)
             .GetMethod(nameof(Result<object>.Failure), [typeof(Error)]);
-        
+
         return (TResponse)failureMethod!.Invoke(null, [error])!;
     }
 }

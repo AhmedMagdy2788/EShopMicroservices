@@ -7,10 +7,7 @@ public static class ResultExtensions
 {
     public static IResult ToHttpResponse<T>(this Result<T> result)
     {
-        if (result.IsSuccess)
-        {
-            return Results.Ok(result);
-        }
+        if (result.IsSuccess) return Results.Ok(result);
 
         // Create error response with details if available
         // var errorResponse = result.Error!.Details != null && result.Error.Details.Any()

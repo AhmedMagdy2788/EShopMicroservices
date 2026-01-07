@@ -11,6 +11,7 @@ internal class GetProductsQueryHandler(IDocumentSession session, ILogger<GetProd
         var products = await session.Query<Product>()
             .ToPagedListAsync(query.PageNumber ?? 1, query.PageSize ?? 10, cancellationToken);
 
-        return Result<IPagedList<Product>>.Success(products,  $"All products count is {products.TotalItemCount} products");
+        return Result<IPagedList<Product>>.Success(products,
+            $"All products count is {products.TotalItemCount} products");
     }
 }

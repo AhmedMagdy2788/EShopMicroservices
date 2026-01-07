@@ -19,14 +19,14 @@ public class DiscountContext(DbContextOptions<DiscountContext> options) : DbCont
                 Id = 1,
                 ProductName = "IPhone X",
                 Description = "IPhone Discount",
-                Amount = 150,
+                Amount = 150
             },
             new Coupon
             {
                 Id = 2,
                 ProductName = "Samsung 10",
                 Description = "Samsung Discount",
-                Amount = 100,
+                Amount = 100
             }
         );
     }
